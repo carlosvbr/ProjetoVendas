@@ -13,12 +13,10 @@ import java.util.List;
 @WebServlet("/VendasServlet")
 public class VendasServlet extends HttpServlet {
 
-    // DAO responsável pela comunicação com o banco de dados
     private VendasDAO vendasDAO;
 
     @Override
     public void init() {
-        // Inicializa o DAO quando o servlet é carregado pelo servidor
         vendasDAO = new VendasDAO();
     }
 
@@ -26,7 +24,6 @@ public class VendasServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Define qual operação será executada via parâmetro da requisição
         String operacao = request.getParameter("operacao");
 
         try {
@@ -45,7 +42,7 @@ public class VendasServlet extends HttpServlet {
                     break;
             }
         } catch (Exception e) {
-            // Encapsula qualquer erro como ServletException (boa prática em Servlets)
+            
             throw new ServletException(e);
         }
     }
@@ -54,7 +51,7 @@ public class VendasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Define operação de consulta via GET
+        
         String operacao = request.getParameter("operacao");
 
         try {
@@ -69,21 +66,17 @@ public class VendasServlet extends HttpServlet {
                     break;
             }
         } catch (Exception e) {
-            // Em caso de erro, redireciona para página com mensagem genérica
+            
             response.sendRedirect("consultar_venda.jsp?msg=erroConsulta");
         }
     }
-
-    // =========================
-    // CADASTRAR VENDA
-    // =========================
+    
     private void cadastrarVenda(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         try {
             ModeloVendas venda = new ModeloVendas();
 
-            // Conversão de dados vindos do formulário (String → tipos Java)
             venda.setId(Integer.parseInt(request.getParameter("id")));
             venda.setDataVenda(LocalDate.parse(request.getParameter("dataVenda")));
             venda.setValorTotal(Double.parseDouble(request.getParameter("valorTotal")));
@@ -95,7 +88,6 @@ public class VendasServlet extends HttpServlet {
             venda.setFrete(Double.parseDouble(request.getParameter("frete")));
             venda.setItemVendido(request.getParameter("itemVendido"));
 
-            // Envia objeto preenchido para camada DAO (persistência no banco)
             vendasDAO.inserir(venda);
 
             response.sendRedirect("cadastrar_venda.jsp?msg=sucessoCadastro");
@@ -105,16 +97,13 @@ public class VendasServlet extends HttpServlet {
         }
     }
 
-    // =========================
-    // ATUALIZAR VENDA
-    // =========================
+
     private void atualizarVenda(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         try {
             ModeloVendas venda = new ModeloVendas();
 
-            // Mesma lógica de mapeamento request → objeto
             venda.setId(Integer.parseInt(request.getParameter("id")));
             venda.setDataVenda(LocalDate.parse(request.getParameter("dataVenda")));
             venda.setValorTotal(Double.parseDouble(request.getParameter("valorTotal")));
@@ -126,7 +115,6 @@ public class VendasServlet extends HttpServlet {
             venda.setFrete(Double.parseDouble(request.getParameter("frete")));
             venda.setItemVendido(request.getParameter("itemVendido"));
 
-            // Atualiza registro existente no banco
             vendasDAO.atualizar(venda);
 
             response.sendRedirect("atualizar_venda.jsp?msg=sucessoAtualizar");
@@ -136,16 +124,12 @@ public class VendasServlet extends HttpServlet {
         }
     }
 
-    // =========================
-    // EXCLUIR VENDA
-    // =========================
     private void excluirVenda(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         try {
             int id = Integer.parseInt(request.getParameter("id"));
 
-            // Remove registro do banco com base no ID
             vendasDAO.excluir(id);
 
             response.sendRedirect("excluir_venda.jsp?msg=sucessoExcluir");
@@ -155,19 +139,15 @@ public class VendasServlet extends HttpServlet {
         }
     }
 
-    // =========================
-    // CONSULTAR POR ID
-    // =========================
+
     private void consultarPorId(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
         try {
             int id = Integer.parseInt(request.getParameter("id"));
 
-            // Busca venda específica no banco
             ModeloVendas venda = vendasDAO.consultarPorId(id);
 
-            // Envia objeto para JSP (View)
             request.setAttribute("venda", venda);
 
             request.getRequestDispatcher("consultar_venda.jsp").forward(request, response);
@@ -177,17 +157,14 @@ public class VendasServlet extends HttpServlet {
         }
     }
 
-    // =========================
-    // CONSULTAR TODOS
-    // =========================
+
     private void consultarTodos(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
         try {
-            // Recupera lista completa do banco
+ 
             List<ModeloVendas> lista = vendasDAO.consultarTodos();
 
-            // Envia lista para JSP
             request.setAttribute("listaVendas", lista);
 
             request.getRequestDispatcher("consultar_venda.jsp").forward(request, response);

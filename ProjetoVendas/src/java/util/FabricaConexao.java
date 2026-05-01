@@ -6,8 +6,6 @@ import java.sql.SQLException;
 
 public class FabricaConexao {
 
-    // URL de conexão com o banco PostgreSQL
-    // Formato: jdbc:postgresql://HOST:PORTA/NOME_DO_BANCO
     private static final String URL = "db_url";
 
     private static final String USER = "db_user";

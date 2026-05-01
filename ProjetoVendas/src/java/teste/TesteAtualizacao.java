@@ -10,7 +10,6 @@ public class TesteAtualizacao {
 
         VendasDAO vendasDao = new VendasDAO();
 
-
         ModeloVendas venda = new ModeloVendas();
 
         venda.setId(1);
